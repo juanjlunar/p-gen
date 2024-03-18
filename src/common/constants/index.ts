@@ -1,1 +1,1 @@
-export const CONFIG_FILE_NAME = 'pg.config.js';
+export const CONFIG_FILE_NAME = 'p-gen.config.ts';

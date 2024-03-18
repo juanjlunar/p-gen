@@ -5,9 +5,12 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx tsc",
-    "dev": "NODE_ENV=development nodemon -e ts,json,.env.* --watch src src/index.ts",
-    "start": "NODE_ENV=production node dist/index.js"
+    "tsc": "npx tsc",
+    "dev": "NODE_ENV=development yarn tsc && yarn dev:watch",
+    "start": "NODE_ENV=production node dist/index.js",
+    "dev:watch": "yarn tsc:watch & yarn node:watch",
+    "tsc:watch": "NODE_ENV=development tsc --watch --preserveWatchOutput",
+    "node:watch": "NODE_ENV=development node --watch dist/index.js"
   },
   "keywords": [],
   "author": "",
@@ -23,14 +26,9 @@
     "typedi": "^0.10.0"
   },
   "devDependencies": {
-    "@swc/core": "^1.4.8",
-    "@swc/helpers": "^0.5.6",
     "@types/figlet": "^1.5.8",
     "@types/lodash": "^4.17.0",
     "@types/node": "^20.11.28",
-    "nodemon": "^3.1.0",
-    "ts-node": "^10.9.2",
-    "ts-node-dev": "^2.0.0",
     "typescript": "^5.4.2"
   }
 }
