@@ -12,7 +12,7 @@ import type { CLIOptions } from './types';
 import { cosmiconfig } from 'cosmiconfig';
 import { CONFIG_FILE_NAME } from './common/constants';
 
-const explorer = cosmiconfig('pg');
+const explorer = cosmiconfig('p-gen');
 
 const program = new Command();
 

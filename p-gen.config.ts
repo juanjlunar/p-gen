@@ -1,11 +1,11 @@
-module.exports = {
+import { Config } from './src/types';
+
+const config: Config = {
   transformers: {
     action: (act) => {
-      // console.log('EN EL ACTION TRANSFORMS: ', act)
       return act.toUpperCase();
     },
     subject: (sub) => {
-      // console.log('EN EL SUBJECT TRANSFORMS: ', sub)
       return sub.toUpperCase();
     }
   },
@@ -15,3 +15,5 @@ module.exports = {
     'x-hasura-role': '${user.user_role}',
   }
 }
+
+export default config;
