@@ -15,12 +15,14 @@ import type {
 } from '../hasura/types';
 import type { Config } from '../common/types';
 import { DEFAULT_HASURA_ENDPOINT_URL } from '../hasura/constants';
+import { LoggerService } from '../logger/logger.service';
 
 @Injectable()
 export class CaslService {
   constructor(
     private readonly hasuraRepository: IHasuraRepository,
     private readonly utilsService: UtilsService,
+    private readonly loggerService: LoggerService,
   ) {}
 
   /**
@@ -63,6 +65,11 @@ export class CaslService {
     );
 
     await this.utilsService.writeFile(permissionsFilePath, permissionsData);
+
+    this.loggerService.log(
+      `Permissions created in ${permissionsFilePath}`,
+      'CaslGeneratorCommand',
+    );
   }
 
   /**

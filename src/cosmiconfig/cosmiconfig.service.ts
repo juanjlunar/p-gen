@@ -27,7 +27,7 @@ export class CosmiconfigService {
     return result?.config as Config | null;
   }
 
-  async loadOrCreate(filePath: string, options = {} as LoadOrCreateOptions) {
+  async loadOrCreate(options = {} as LoadOrCreateOptions) {
     const { loggerContext } = options;
 
     this.loggerService.setContext(loggerContext);
@@ -40,9 +40,11 @@ export class CosmiconfigService {
       return loadedFile;
     }
 
-    this.loggerService.log(`No Config file found at ${filePath}`);
+    this.loggerService.log('No Config file found.');
 
-    this.loggerService.log(`Creating a ${CONFIG_FILE_NAME} in ${filePath}`);
+    this.loggerService.log(
+      `Creating a ${CONFIG_FILE_NAME} in the current working directory...`,
+    );
 
     await this.utilsService.createConfigFile();
 

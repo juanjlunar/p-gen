@@ -1,6 +1,5 @@
 import { CommandRunner, RootCommand, Option } from 'nest-commander';
 import { CosmiconfigService } from '../cosmiconfig/cosmiconfig.service';
-import { join } from 'path';
 import type { CaslGeneratorOptions } from './types';
 import { CaslService } from './casl.service';
 import { DEFAULT_HASURA_ENDPOINT_URL } from '../hasura/constants';
@@ -31,14 +30,9 @@ export class CaslGeneratorCommand extends CommandRunner {
     passedParams: string[],
     options?: CaslGeneratorOptions,
   ): Promise<void> {
-    const { configPath = '' } = options;
-
-    const config = await this.cosmiconfigService.loadOrCreate(
-      join(process.cwd(), configPath),
-      {
-        loggerContext: CaslGeneratorCommand.name,
-      },
-    );
+    const config = await this.cosmiconfigService.loadOrCreate({
+      loggerContext: CaslGeneratorCommand.name,
+    });
 
     const [hasuraAdminSecret, hasuraEndpointUrl] = passedParams;
 
@@ -57,14 +51,6 @@ export class CaslGeneratorCommand extends CommandRunner {
     description: 'The Hasura data source name (default: "default")',
   })
   parseDataSource(value: string) {
-    return value;
-  }
-
-  @Option({
-    flags: '-cp, --config-path [path]',
-    description: 'The Hasura config file path (default: "")',
-  })
-  parseConfigPath(value: string) {
     return value;
   }
 }

@@ -2,7 +2,6 @@ import type { Config } from '../common/types';
 
 export type CaslGeneratorOptions = {
   dataSource?: string;
-  configPath?: string;
 };
 
 export type GenerateCaslPermissionsDto = {
