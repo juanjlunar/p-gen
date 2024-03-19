@@ -1,15 +1,19 @@
-import { Module } from "./core/decorators/module.decorator";
-import { HasuraModule } from "./hasura/hasura.module";
-import { HttpModule } from "./http/http.module";
-import { UtilsModule } from "./utils/utils.module";
+import { Module } from '@nestjs/common';
+import { CaslModule } from './casl/casl.module';
+import { CosmiconfigModule } from './cosmiconfig/cosmiconfig.module';
+import { UtilsModule } from './utils/utils.module';
+import { LoggerModule } from './logger/logger.module';
+import { HasuraModule } from './hasura/hasura.module';
 
 @Module({
   imports: [
-      HasuraModule, 
-      UtilsModule, 
-      HttpModule.register({
-      url: 'http://localhost:8080/v1/metadata',
-    })
+    CaslModule,
+    CosmiconfigModule,
+    UtilsModule,
+    LoggerModule,
+    HasuraModule,
   ],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
