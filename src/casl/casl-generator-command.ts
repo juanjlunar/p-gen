@@ -3,22 +3,18 @@ import { CosmiconfigService } from '../cosmiconfig/cosmiconfig.service';
 import type { CaslGeneratorOptions } from './types';
 import { CaslService } from './casl.service';
 import { DEFAULT_HASURA_ENDPOINT_URL } from '../hasura/constants';
-import { Logger } from '@nestjs/common';
 
 @RootCommand({
   description: 'Generate Casl permissions from Hasura permissions',
-  arguments: '<hasura-admin-secret> [hasura-endpoint-url]',
+  arguments: '<hasura-admin-secret>',
   options: {
     isDefault: true,
   },
   argsDescription: {
     'hasura-admin-secret': 'The Hasura admin secret',
-    'hasura-endpoint-url': `The Hasura endpoint url (default: "${DEFAULT_HASURA_ENDPOINT_URL}")`,
   },
 })
 export class CaslGeneratorCommand extends CommandRunner {
-  private logger = new Logger();
-
   constructor(
     private readonly cosmiconfigService: CosmiconfigService,
     private readonly caslService: CaslService,
@@ -34,12 +30,11 @@ export class CaslGeneratorCommand extends CommandRunner {
       loggerContext: CaslGeneratorCommand.name,
     });
 
-    const [hasuraAdminSecret, hasuraEndpointUrl] = passedParams;
+    const [hasuraAdminSecret] = passedParams;
 
     await this.caslService.generateCaslPermissions({
       args: {
         hasuraAdminSecret,
-        hasuraEndpointUrl,
       },
       options,
       config,
@@ -51,6 +46,14 @@ export class CaslGeneratorCommand extends CommandRunner {
     description: 'The Hasura data source name (default: "default")',
   })
   parseDataSource(value: string) {
+    return value;
+  }
+
+  @Option({
+    flags: '-he, --hasura-endpoint-url <hasura-endpoint-url>',
+    description: `The Hasura endpoint url (default: "${DEFAULT_HASURA_ENDPOINT_URL}")`,
+  })
+  parseHasuraEndpointUrl(value: string) {
     return value;
   }
 }

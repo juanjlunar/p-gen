@@ -2,12 +2,12 @@ import type { Config } from '../common/types';
 
 export type CaslGeneratorOptions = {
   dataSource?: string;
+  hasuraEndpointUrl?: string;
 };
 
 export type GenerateCaslPermissionsDto = {
   args: {
     hasuraAdminSecret: string;
-    hasuraEndpointUrl: string;
   };
   options: CaslGeneratorOptions;
   config: Config;

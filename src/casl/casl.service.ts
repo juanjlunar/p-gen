@@ -34,11 +34,11 @@ export class CaslService {
   ) {
     const {
       config,
-      args: {
-        hasuraAdminSecret,
+      args: { hasuraAdminSecret },
+      options: {
+        dataSource = 'default',
         hasuraEndpointUrl = DEFAULT_HASURA_ENDPOINT_URL,
       },
-      options: { dataSource = 'default' },
     } = generateCaslPermissionsDto;
 
     const hasuraMetadata = await this.hasuraRepository.getHasuraMetadata({
