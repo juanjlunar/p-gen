@@ -1,35 +1,48 @@
-import { Injectable } from "../core/decorators/injectable.decorator";
-import type { FetchHasuraMetadataResult, GetHasuraMetadataArgs } from "./types";
-import { HttpService } from "../http/http.service";
-import { UnauthorizedError } from "../core/errors/unauthenticated.error";
-import { AxiosError } from "axios";
-import { NotFoundError } from "../core/errors/not-found.error";
+import { AxiosError } from 'axios';
+import { Injectable } from '@nestjs/common';
+import type { FetchHasuraMetadataResult, GetHasuraMetadataArgs } from './types';
+import { NotFoundError } from '../common/errors/not-found.error';
+import { UnauthorizedError } from '../common/errors/unauthenticated.error';
+import { IHasuraRepository } from './ihasura-repository.interface';
+import { HttpService } from '@nestjs/axios';
+import { firstValueFrom } from 'rxjs';
+import { HasuraConnectionError } from '../common/errors/hasura-connection.error';
 
 @Injectable()
-export class HasuraRepository {
-  constructor(
-    private readonly httpService: HttpService,
-  ) {}
+export class HasuraRepository implements IHasuraRepository {
+  constructor(private readonly httpService: HttpService) {}
 
-  async getHasuraMetadata(args: GetHasuraMetadataArgs): Promise<FetchHasuraMetadataResult> {
+  async getHasuraMetadata(
+    args: GetHasuraMetadataArgs,
+  ): Promise<FetchHasuraMetadataResult> {
     const { hasuraAdminSecret, hasuraEndpointUrl } = args;
 
     try {
-      const result = await this.httpService.post<FetchHasuraMetadataResult>({
-        "type": "export_metadata",
-        "version": 2,
-        "args": {},
-      }, {
-        headers: {
-          'x-hasura-admin-secret': hasuraAdminSecret,
-          'Content-Type': 'application/json'
+      const request = this.httpService.post<FetchHasuraMetadataResult>(
+        hasuraEndpointUrl,
+        {
+          type: 'export_metadata',
+          version: 2,
+          args: {},
         },
-        url: hasuraEndpointUrl,
-      });
+        {
+          headers: {
+            'x-hasura-admin-secret': hasuraAdminSecret,
+            'Content-Type': 'application/json',
+          },
+          url: hasuraEndpointUrl,
+        },
+      );
+
+      const result = await firstValueFrom(request);
 
       return result.data;
     } catch (err) {
       const error = err as AxiosError<{ error?: string }>;
+
+      if (error.code === 'ECONNREFUSED') {
+        throw new HasuraConnectionError(hasuraEndpointUrl);
+      }
 
       if (error.response?.status === 401) {
         throw new UnauthorizedError();

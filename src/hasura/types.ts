@@ -1,23 +1,23 @@
 export type GetHasuraMetadataArgs = {
   hasuraAdminSecret: string;
   hasuraEndpointUrl: string;
-}
+};
 
 export type FetchHasuraMetadataResult = {
   resource_version: number;
-  metadata: HasuraMetadata
-}
+  metadata: HasuraMetadata;
+};
 
 export type HasuraMetadata = {
   version: number;
   sources: HasuraMetadataSource[];
-}
+};
 
 export type HasuraMetadataSource = {
   name: string;
   kind: 'postgres';
   tables: HasuraMetadataTable[];
-}
+};
 
 export type HasuraMetadataTable = {
   table: {
@@ -28,22 +28,15 @@ export type HasuraMetadataTable = {
   select_permissions?: HasuraRolePermission[];
   update_permissions?: HasuraRolePermission[];
   delete_permissions?: HasuraRolePermission[];
-}
+};
 
 export type HasuraRolePermission = {
   role: string;
   permission: HasuraPermission;
-}
+};
 
 export type HasuraPermission = {
   columns: string[];
-  filter: Record<string, unknown>,
+  filter: Record<string, unknown>;
   comment: string;
-}
-
-export type CaslPermission = {
-  action: string;
-  subject: string;
-  fields: string[] | null;
-  conditions: Record<string, unknown>;
-}
+};
