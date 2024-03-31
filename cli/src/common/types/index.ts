@@ -1,5 +1,3 @@
-import type { Knex } from 'knex';
-
 export type Config = {
   transformers?: {
     action: (value: string) => string;
@@ -14,18 +12,6 @@ export type ConfigExports = JSONConfig;
 export type JSONConfig = {
   type: 'JSON';
   options?: undefined;
-};
-
-export type DBConfig = {
-  type: 'DB';
-  options: {
-    table: TableOptions;
-  } & DBConnectionOptions;
-};
-
-export type DBConnectionOptions = {
-  client: Knex.Config['client'];
-  connection: Knex.Config['connection'];
 };
 
 export type TableOptions = {
