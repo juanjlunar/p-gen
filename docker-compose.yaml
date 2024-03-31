@@ -1,0 +1,33 @@
+version: "3.6"
+services:
+  postgres:
+    image: postgres:15.4-alpine3.18
+    restart: always
+    ports:
+      - "5500:5432"
+    env_file:
+      - ./postgres/.env
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - p-gen-network
+
+  hasura:
+    build:
+      context: ./hasura
+    restart: always
+    depends_on:
+      - postgres
+    ports:
+      - "8100:8080"
+    env_file:
+      - ./hasura/.env
+    networks:
+      - p-gen-network
+      
+volumes:
+  db_data:
+
+networks:
+  p-gen-network:
+    name: p-gen-network
