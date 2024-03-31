@@ -1,0 +1,12 @@
+{
+  "name": "hasura",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "console": "hasura console --console-port $(grep HASURA_CONSOLE_PORT= .env | cut -d '=' -f2-) --admin-secret $(grep HASURA_GRAPHQL_ADMIN_SECRET= .env | cut -d '=' -f2-) --api-port $(grep HASURA_CONSOLE_API_PORT= .env | cut -d '=' -f2-)",
+    "refresh": "hasura migrate apply --database-name default && hasura metadata apply && hasura metadata reload"
+  },
+  "author": "",
+  "license": "ISC"
+}
