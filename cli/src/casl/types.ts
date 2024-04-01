@@ -1,7 +1,8 @@
 export type CaslGeneratorOptions = {
+  hasuraAdminSecret: string;
   dataSource?: string;
   hasuraEndpointUrl?: string;
-  unflatten?: boolean;
+  flat?: boolean;
 };
 
 export type GenerateCaslPermissionsDto = {

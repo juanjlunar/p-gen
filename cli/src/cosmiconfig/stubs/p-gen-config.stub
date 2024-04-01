@@ -1,10 +1,22 @@
-import type { Config } from './src/common/types';
+import type { Config } from './';
 
 const config: Config = {
   transformers: {
     action: (act: string) => {
       // Do your transformation.
-      return act;
+      switch (act) {
+        case 'insert_permissions':
+          return 'INSERT';
+        case 'update_permissions':
+          return 'UPDATE';
+        case 'select_permissions':
+          return 'READ';
+        case 'delete_permissions':
+          return 'DELETE';
+
+        default:
+          return act;
+      }
     },
     subject: (sub: string) => {
       // Do your transformation.
@@ -13,7 +25,7 @@ const config: Config = {
   },
   replacements: {
     // Example
-    // 'x-hasura-user-id': '${user.id}',
+    'x-hasura-user-id': '${user.id}',
   },
 };
 

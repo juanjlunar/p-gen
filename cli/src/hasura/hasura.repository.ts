@@ -1,7 +1,9 @@
 import { AxiosError } from 'axios';
 import { Injectable } from '@nestjs/common';
 import type {
+  CreateInsertPermissionArgs,
   CreateSelectPermissionArgs,
+  CreateUpdatePermissionArgs,
   DropSelectPermissionArgs,
   FetchHasuraMetadataResult,
   GetHasuraMetadataArgs,
@@ -127,6 +129,177 @@ export class HasuraRepository implements IHasuraRepository {
     }
   }
 
+  async createInsertPermission(permissionArgs: CreateInsertPermissionArgs) {
+    const {
+      headers: { hasuraAdminSecret, hasuraEndpointUrl },
+      source = 'default',
+      ...restArgs
+    } = permissionArgs;
+
+    try {
+      const request = this.httpService.post<HasuraMetadataSuccess>(
+        hasuraEndpointUrl,
+        {
+          type: 'pg_create_insert_permission',
+          version: 1,
+          args: {
+            ...restArgs,
+            source,
+          },
+        },
+        {
+          headers: {
+            'x-hasura-admin-secret': hasuraAdminSecret,
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+
+      // Retry 3 times in case the Hasura container is swill booting up.
+      const result = await firstValueFrom(
+        request.pipe(
+          map((value) => value),
+          retry({
+            count: 5,
+            delay: 500,
+          }),
+        ),
+      );
+
+      return result.data;
+    } catch (err) {
+      const error = err as AxiosError<{ error?: string }>;
+
+      if (error.code === 'ECONNREFUSED') {
+        throw new HasuraConnectionError(hasuraEndpointUrl);
+      }
+
+      if (error.response?.status === 401) {
+        throw new UnauthorizedError();
+      }
+
+      if (error.response?.status === 404) {
+        throw new NotFoundError();
+      }
+
+      throw new Error(error.response?.data?.error ?? 'Unknown error.');
+    }
+  }
+
+  async createUpdatePermission(permissionArgs: CreateUpdatePermissionArgs) {
+    const {
+      headers: { hasuraAdminSecret, hasuraEndpointUrl },
+      source = 'default',
+      ...restArgs
+    } = permissionArgs;
+
+    try {
+      const request = this.httpService.post<HasuraMetadataSuccess>(
+        hasuraEndpointUrl,
+        {
+          type: 'pg_create_update_permission',
+          version: 1,
+          args: {
+            ...restArgs,
+            source,
+          },
+        },
+        {
+          headers: {
+            'x-hasura-admin-secret': hasuraAdminSecret,
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+
+      // Retry 3 times in case the Hasura container is swill booting up.
+      const result = await firstValueFrom(
+        request.pipe(
+          map((value) => value),
+          retry({
+            count: 5,
+            delay: 500,
+          }),
+        ),
+      );
+
+      return result.data;
+    } catch (err) {
+      const error = err as AxiosError<{ error?: string }>;
+
+      if (error.code === 'ECONNREFUSED') {
+        throw new HasuraConnectionError(hasuraEndpointUrl);
+      }
+
+      if (error.response?.status === 401) {
+        throw new UnauthorizedError();
+      }
+
+      if (error.response?.status === 404) {
+        throw new NotFoundError();
+      }
+
+      throw new Error(error.response?.data?.error ?? 'Unknown error.');
+    }
+  }
+
+  async createDeletePermission(permissionArgs: CreateUpdatePermissionArgs) {
+    const {
+      headers: { hasuraAdminSecret, hasuraEndpointUrl },
+      source = 'default',
+      ...restArgs
+    } = permissionArgs;
+
+    try {
+      const request = this.httpService.post<HasuraMetadataSuccess>(
+        hasuraEndpointUrl,
+        {
+          type: 'pg_create_delete_permission',
+          version: 1,
+          args: {
+            ...restArgs,
+            source,
+          },
+        },
+        {
+          headers: {
+            'x-hasura-admin-secret': hasuraAdminSecret,
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+
+      // Retry 3 times in case the Hasura container is swill booting up.
+      const result = await firstValueFrom(
+        request.pipe(
+          map((value) => value),
+          retry({
+            count: 5,
+            delay: 500,
+          }),
+        ),
+      );
+
+      return result.data;
+    } catch (err) {
+      const error = err as AxiosError<{ error?: string }>;
+
+      if (error.code === 'ECONNREFUSED') {
+        throw new HasuraConnectionError(hasuraEndpointUrl);
+      }
+
+      if (error.response?.status === 401) {
+        throw new UnauthorizedError();
+      }
+
+      if (error.response?.status === 404) {
+        throw new NotFoundError();
+      }
+
+      throw new Error(error.response?.data?.error ?? 'Unknown error.');
+    }
+  }
+
   async dropPermission(
     args: DropSelectPermissionArgs,
   ): Promise<HasuraMetadataSuccess> {
@@ -158,13 +331,14 @@ export class HasuraRepository implements IHasuraRepository {
 
       // Retry 3 times in case the Hasura container is swill booting up.
       const result = await firstValueFrom(
-        request.pipe(
-          map((value) => value),
-          retry({
-            count: 5,
-            delay: 500,
-          }),
-        ),
+        request,
+        // request.pipe(
+        //   map((value) => value),
+        //   retry({
+        //     count: 5,
+        //     delay: 500,
+        //   }),
+        // ),
       );
 
       return result.data;

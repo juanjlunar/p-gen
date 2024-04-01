@@ -9,6 +9,8 @@ export default defineConfig({
       reportOnFailure: true,
       reporter: ['html'],
       provider: 'v8',
+      include: ['src/**'],
+      exclude: ['src/**/*.module.ts'],
     },
   },
   plugins: [
