@@ -8,5 +8,8 @@ export function createHasuraRepositoryMock(): HasuraRepositoryMock {
     getHasuraMetadata: vi.fn(),
     createSelectPermission: vi.fn(),
     dropPermission: vi.fn(),
+    createDeletePermission: vi.fn(),
+    createInsertPermission: vi.fn(),
+    createUpdatePermission: vi.fn(),
   };
 }
