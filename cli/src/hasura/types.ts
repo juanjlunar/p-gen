@@ -56,8 +56,22 @@ export type CreateSelectPermissionArgs<Role extends string = 'user'> = {
   };
 };
 
+export interface CreateInsertPermissionArgs<Role extends string = 'user'>
+  extends Omit<CreateSelectPermissionArgs<Role>, 'permission'> {
+  permission: {
+    columns: string[] | '*';
+    check: Record<string, unknown>;
+  };
+}
+
+export type CreateUpdatePermissionArgs = CreateSelectPermissionArgs;
+
 export type DropSelectPermissionArgs<Role extends string = 'user'> = {
-  type: 'pg_drop_select_permission' | 'pg_drop_insert_permission';
+  type:
+    | 'pg_drop_select_permission'
+    | 'pg_drop_insert_permission'
+    | 'pg_drop_update_permission'
+    | 'pg_drop_delete_permission';
   source?: string;
   table: string;
   role: Role;

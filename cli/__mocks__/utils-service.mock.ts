@@ -8,6 +8,6 @@ export function createUtilsServiceMock(): UtilsServiceMock {
     replaceHasuraSessionVars: vi.fn(),
     createConfigFile: vi.fn(),
     writeFile: vi.fn(),
-    unflattenPermissionsMapping: vi.fn(),
+    flatPermissionsMapping: vi.fn(),
   };
 }

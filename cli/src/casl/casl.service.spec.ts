@@ -7,6 +7,8 @@ import { createUtilsServiceMock } from '__mocks__/utils-service.mock';
 import { LoggerService } from '../logger/logger.service';
 import { createLoggerServiceMock } from '__mocks__/logger-service.mock';
 import { CONFIG_OPTIONS_TOKEN } from '../cosmiconfig/constants/injection-tokens.constant';
+import { createCaslPermissionTransformerMock } from '__mocks__/casl-permission-transformer.mock';
+import { CaslPermissionTransformer } from './casl-permission-transformer/casl-permission-transformer';
 
 describe('CaslService', () => {
   let service: CaslService;
@@ -29,6 +31,10 @@ describe('CaslService', () => {
         {
           provide: CONFIG_OPTIONS_TOKEN,
           useValue: {},
+        },
+        {
+          provide: CaslPermissionTransformer,
+          useValue: createCaslPermissionTransformerMock(),
         },
         CaslService,
       ],

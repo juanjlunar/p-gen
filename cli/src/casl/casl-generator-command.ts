@@ -9,12 +9,8 @@ import { UtilsService } from '../utils/utils.service';
 
 @RootCommand({
   description: 'Generate Casl permissions from Hasura permissions',
-  arguments: '<hasura-admin-secret>',
   options: {
     isDefault: true,
-  },
-  argsDescription: {
-    'hasura-admin-secret': 'The Hasura admin secret',
   },
 })
 export class CaslGeneratorCommand extends CommandRunner {
@@ -26,33 +22,42 @@ export class CaslGeneratorCommand extends CommandRunner {
   }
 
   async run(
-    passedParams: string[],
+    _passedParams: string[],
     options = {} as CaslGeneratorOptions,
   ): Promise<void> {
     const {
+      hasuraAdminSecret,
       hasuraEndpointUrl = DEFAULT_HASURA_ENDPOINT_URL,
       dataSource = DEFAULT_DATA_SOURCE,
-      unflatten = false,
+      flat = false,
     } = options;
-
-    const [hasuraAdminSecret] = passedParams;
-
     const permissions = await this.caslService.generateCaslPermissions({
       hasuraAdminSecret,
       hasuraEndpointUrl,
       dataSource,
     });
 
-    const resolvedPermissions = !unflatten
+    const resolvedPermissions = !flat
       ? permissions
-      : this.utilsService.unflattenPermissionsMapping(permissions);
+      : this.utilsService.flatPermissionsMapping(permissions);
 
     await this.caslService.exportToJSON(resolvedPermissions);
   }
 
   @Option({
+    flags: '-s, --hasura-admin-secret <hasura-admin-secret>',
+    description:
+      'Indicate the Hasura instance admin secret to request the permissions. (Required)',
+    required: true,
+  })
+  parseHasuraSecret(value: string) {
+    return value;
+  }
+
+  @Option({
     flags: '-ds, --data-source [data-source]',
-    description: 'The Hasura data source name (default: "default")',
+    description:
+      'Indicate the Hasura instance data source name (default: "default")',
   })
   parseDataSource(value: string) {
     return value;
@@ -60,17 +65,17 @@ export class CaslGeneratorCommand extends CommandRunner {
 
   @Option({
     flags: '-he, --hasura-endpoint-url <hasura-endpoint-url>',
-    description: `The Hasura endpoint url (default: "${DEFAULT_HASURA_ENDPOINT_URL}")`,
+    description: `Indicate the Hasura instance endpoint url (default: "${DEFAULT_HASURA_ENDPOINT_URL}")`,
   })
   parseHasuraEndpointUrl(value: string) {
     return value;
   }
 
   @Option({
-    flags: '-u, --unflatten [unflatten]',
-    description: `Indicate if the permissions should be unflattened. A CaslPermission array will be created instead of a Hasura role to CaslPermission array mapping.`,
+    flags: '-f, --flat [flat]',
+    description: `Generate the permissions without the user roles.`,
   })
-  parseUnflatten(value: string) {
+  parseFlat(value: string) {
     return value.toLowerCase() === 'true';
   }
 }

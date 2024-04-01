@@ -55,7 +55,7 @@ export class UtilsService {
     await writeFile(filePath, data);
   }
 
-  unflattenPermissionsMapping(
+  flatPermissionsMapping(
     permissions: PermissionsMappingByRole,
   ): CaslPermission[] {
     return Object.keys(permissions).reduce((acc, next) => {

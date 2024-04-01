@@ -3,6 +3,8 @@ import { CaslGeneratorCommand } from './casl-generator-command';
 import { CaslService } from './casl.service';
 import { createCaslServiceMock } from '__mocks__/casl-service.mock';
 import { CONFIG_OPTIONS_TOKEN } from '../cosmiconfig/constants/injection-tokens.constant';
+import { UtilsService } from '../utils/utils.service';
+import { createUtilsServiceMock } from '__mocks__/utils-service.mock';
 
 describe('CaslRepository', () => {
   let service: CaslGeneratorCommand;
@@ -17,6 +19,10 @@ describe('CaslRepository', () => {
         {
           provide: CONFIG_OPTIONS_TOKEN,
           useValue: {},
+        },
+        {
+          provide: UtilsService,
+          useValue: createUtilsServiceMock(),
         },
         CaslGeneratorCommand,
       ],

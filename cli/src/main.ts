@@ -9,7 +9,7 @@ async function bootstrap() {
   console.log(figlet.textSync('P-GEN CLI'));
 
   await CommandFactory.run(AppModule, {
-    logger: new Logger(),
+    logger: process.env.NODE_ENV === 'development' ? new Logger() : undefined,
     serviceErrorHandler: (err) => {
       console.log(`error: ${err.message}`);
     },
