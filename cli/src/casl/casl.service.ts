@@ -93,9 +93,9 @@ export class CaslService {
    * Resolve the permissions mapping by user role.
    *
    */
-  private async getPermissionsMapping(
+  private getPermissionsMapping(
     metadataTables: HasuraMetadataTable[],
-  ): Promise<PermissionsMappingByRole> {
+  ): PermissionsMappingByRole {
     const {
       transformers: {
         action: actionTransformer = undefined,
@@ -141,7 +141,7 @@ export class CaslService {
           );
 
           const flattenedConditions =
-            await this.caslPermissionTransformer.caslify(newConditions);
+            this.caslPermissionTransformer.caslify(newConditions);
 
           const caslPermission: CaslPermission = {
             action,

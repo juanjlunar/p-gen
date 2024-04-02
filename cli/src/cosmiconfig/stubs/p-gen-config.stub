@@ -1,4 +1,4 @@
-import type { Config } from './';
+import type { Config } from 'p-gen';
 
 const config: Config = {
   transformers: {

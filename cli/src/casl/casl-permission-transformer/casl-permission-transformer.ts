@@ -2,6 +2,7 @@ import set from 'lodash/set';
 import { AnyObject } from '../../common/types';
 import { arrayLogicalOperators, arrayOperators } from '../constants';
 import { Injectable } from '@nestjs/common';
+import { unflatten, flatten } from 'flat';
 
 @Injectable()
 export class CaslPermissionTransformer {
@@ -9,9 +10,7 @@ export class CaslPermissionTransformer {
    * Transform a Hasura permission into a Casl-compatible one.
    *
    */
-  async caslify(hasuraPermission: AnyObject) {
-    const { flatten } = await import('flat'); // Pure ESM module.
-
+  caslify(hasuraPermission: AnyObject) {
     const flattened = flatten({
       ...hasuraPermission,
     }) as AnyObject;
@@ -23,7 +22,7 @@ export class CaslPermissionTransformer {
 
     const transformed = this.formatPermission(stackerOperatorsTransformed);
 
-    const withFormattedArrays = await this.formatArrayProperties(transformed);
+    const withFormattedArrays = this.formatArrayProperties(transformed);
 
     return withFormattedArrays;
   }
@@ -32,11 +31,7 @@ export class CaslPermissionTransformer {
    * Unflatten array properties.
    *
    */
-  private async formatArrayProperties(
-    flattened: AnyObject,
-  ): Promise<AnyObject> {
-    const { unflatten } = await import('flat'); // Pure ESM module.
-
+  private formatArrayProperties(flattened: AnyObject): AnyObject {
     const transformed = {} as AnyObject;
 
     Object.entries(flattened).forEach(([key, value]) => {

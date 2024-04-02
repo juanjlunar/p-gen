@@ -30,7 +30,7 @@ export class UtilsService {
     const cwd = process.cwd();
 
     const stubFilePath = await readFile(
-      join(cwd, 'src', 'cosmiconfig', 'stubs', 'p-gen-config.stub'),
+      join(__dirname, '../', 'cosmiconfig', 'stubs', 'p-gen-config.stub'),
       {
         encoding: 'utf-8',
       },
