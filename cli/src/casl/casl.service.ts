@@ -124,7 +124,7 @@ export class CaslService {
             tableMetadata.table.name;
 
           const fields = !rolePermission?.permission?.columns?.length
-            ? null
+            ? ['']
             : rolePermission.permission.columns;
 
           const conditions =

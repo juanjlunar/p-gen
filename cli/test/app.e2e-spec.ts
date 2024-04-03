@@ -66,6 +66,54 @@ describe('CaslGeneratorCommand (e2e)', () => {
   });
 
   describe('READ', () => {
+    describe('when the permission has no selected columns', () => {
+      test('"id" is equal to x-hasura-user-id selecting id column', async () => {
+        await hasuraRepository.createSelectPermission({
+          table: 'users',
+          role: 'user',
+          permission: {
+            columns: [],
+            filter: {
+              id: {
+                _eq: 'x-hasura-user-id',
+              },
+            },
+          },
+          headers: options,
+        });
+
+        await CommandTestFactory.run(commandModule, [
+          '-s',
+          options.hasuraAdminSecret,
+          '-he',
+          options.hasuraEndpointUrl,
+          '-f',
+          'true',
+        ]);
+
+        const permissionsJSON = await loadPermissions();
+
+        const appAbility = defineAbilityfor(
+          {
+            id: '1',
+            user_roles: [{ role: 'ADMIN', user_id: '1' }],
+          },
+          permissionsJSON,
+        );
+
+        const test = appAbility.can(
+          'READ',
+          {
+            __customSubject: Subjects.User,
+            id: '1',
+          },
+          'id',
+        );
+
+        expect(test).toBe(false);
+      });
+    });
+
     describe('when _exists operator is used', () => {
       test('exists table "user_roles" where "role" equals to "ADMIN"', async () => {
         await hasuraRepository.createSelectPermission({
@@ -1118,6 +1166,54 @@ describe('CaslGeneratorCommand (e2e)', () => {
   });
 
   describe('INSERT', () => {
+    describe('when the permission has no selected columns', () => {
+      test('"id" is equal to x-hasura-user-id inserting with id column', async () => {
+        await hasuraRepository.createInsertPermission({
+          table: 'users',
+          role: 'user',
+          permission: {
+            columns: [],
+            check: {
+              id: {
+                _eq: 'x-hasura-user-id',
+              },
+            },
+          },
+          headers: options,
+        });
+
+        await CommandTestFactory.run(commandModule, [
+          '-s',
+          options.hasuraAdminSecret,
+          '-he',
+          options.hasuraEndpointUrl,
+          '-f',
+          'true',
+        ]);
+
+        const permissionsJSON = await loadPermissions();
+
+        const appAbility = defineAbilityfor(
+          {
+            id: '1',
+            user_roles: [{ role: 'ADMIN', user_id: '1' }],
+          },
+          permissionsJSON,
+        );
+
+        const test = appAbility.can(
+          'INSERT',
+          {
+            __customSubject: Subjects.User,
+            id: '1',
+          },
+          'id',
+        );
+
+        expect(test).toBe(false);
+      });
+    });
+
     describe('when _exists operator is used', () => {
       test('exists table "user_roles" where "role" equals to "ADMIN"', async () => {
         await hasuraRepository.createInsertPermission({
@@ -2170,6 +2266,54 @@ describe('CaslGeneratorCommand (e2e)', () => {
   });
 
   describe('UPDATE', () => {
+    describe('when the permission has no selected columns', () => {
+      test('"id" is equal to x-hasura-user-id updating id', async () => {
+        await hasuraRepository.createUpdatePermission({
+          table: 'users',
+          role: 'user',
+          permission: {
+            columns: [],
+            filter: {
+              id: {
+                _eq: 'x-hasura-user-id',
+              },
+            },
+          },
+          headers: options,
+        });
+
+        await CommandTestFactory.run(commandModule, [
+          '-s',
+          options.hasuraAdminSecret,
+          '-he',
+          options.hasuraEndpointUrl,
+          '-f',
+          'true',
+        ]);
+
+        const permissionsJSON = await loadPermissions();
+
+        const appAbility = defineAbilityfor(
+          {
+            id: '1',
+            user_roles: [{ role: 'ADMIN', user_id: '1' }],
+          },
+          permissionsJSON,
+        );
+
+        const test = appAbility.can(
+          'UPDATE',
+          {
+            __customSubject: Subjects.User,
+            id: '1',
+          },
+          'id',
+        );
+
+        expect(test).toBe(false);
+      });
+    });
+
     describe('when _exists operator is used', () => {
       test('exists table "user_roles" where "role" equals to "ADMIN"', async () => {
         await hasuraRepository.createUpdatePermission({
