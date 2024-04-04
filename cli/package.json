@@ -2,7 +2,7 @@
   "name": "p-gen",
   "bin": "dist/main.js",
   "version": "1.0.0",
-  "description": "A command line to convert Hasura permissions into Casl compatible one.",
+  "description": "A command line to transform Hasura permissions into Casl-compatible ones.",
   "author": "Juan Lunar",
   "private": true,
   "license": "MIT",
