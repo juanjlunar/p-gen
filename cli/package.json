@@ -28,7 +28,8 @@
     "posttest:e2e:watch": "yarn test:e2e:down",
     "test:e2e:down": "docker compose kill hasura && docker compose down",
     "call": "NODE_ENV=development npx ts-node src/main.ts",
-    "fresh:install": "rm -r node_modules | echo && yarn install --frozen-lockfile"
+    "fresh:install": "rm -r node_modules | echo && yarn install --frozen-lockfile",
+    "publish:prod": "yarn fresh:install && yarn build && yarn fresh:install --production && yarn publish"
   },
   "dependencies": {
     "@nestjs/axios": "^3.0.2",
