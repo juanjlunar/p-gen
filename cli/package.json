@@ -1,6 +1,8 @@
 {
-  "name": "p-gen",
-  "bin": "dist/main.js",
+  "name": "@lunarj/p-gen",
+  "bin": {
+    "p-gen": "dist/main.js"
+  },
   "version": "1.0.2",
   "description": "A command line to transform Hasura permissions into Casl-compatible ones.",
   "author": "Juan Lunar",
@@ -28,8 +30,7 @@
     "posttest:e2e:watch": "yarn test:e2e:down",
     "test:e2e:down": "docker compose kill hasura && docker compose down",
     "call": "NODE_ENV=development npx ts-node src/main.ts",
-    "fresh:install": "rm -r node_modules | echo && yarn install --frozen-lockfile",
-    "publish:prod": "yarn fresh:install && yarn build && yarn fresh:install --production && yarn publish"
+    "fresh:install": "rm -r node_modules | echo && yarn install --frozen-lockfile"
   },
   "dependencies": {
     "@nestjs/axios": "^3.0.2",
