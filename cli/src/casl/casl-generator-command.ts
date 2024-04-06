@@ -47,7 +47,7 @@ export class CaslGeneratorCommand extends CommandRunner {
   @Option({
     flags: '-s, --hasura-admin-secret <hasura-admin-secret>',
     description:
-      'Indicate the Hasura instance admin secret to request the permissions. (Required)',
+      'Indicates your Hasura server admin secret to connect to. (Required)',
     required: true,
   })
   parseHasuraSecret(value: string) {
@@ -57,7 +57,7 @@ export class CaslGeneratorCommand extends CommandRunner {
   @Option({
     flags: '-ds, --data-source [data-source]',
     description:
-      'Indicate the Hasura instance data source name (default: "default")',
+      'Indicates the Hasura data source to fetch the permissions from (default: "default")',
   })
   parseDataSource(value: string) {
     return value;
@@ -65,7 +65,7 @@ export class CaslGeneratorCommand extends CommandRunner {
 
   @Option({
     flags: '-he, --hasura-endpoint-url <hasura-endpoint-url>',
-    description: `Indicate the Hasura instance endpoint url (default: "${DEFAULT_HASURA_ENDPOINT_URL}")`,
+    description: `Indicates the Hasura server's location. It is required to provide the full url including the /v1/metadata (default: "${DEFAULT_HASURA_ENDPOINT_URL}")`,
   })
   parseHasuraEndpointUrl(value: string) {
     return value;
@@ -73,7 +73,7 @@ export class CaslGeneratorCommand extends CommandRunner {
 
   @Option({
     flags: '-f, --flat [flat]',
-    description: `Generate the permissions without the user roles.`,
+    description: `Generates permissions without the Hasura roles mapping. It will be a plain array with the permissions without the role separation. (default: false)`,
   })
   parseFlat(value: string) {
     return value.toLowerCase() === 'true';
