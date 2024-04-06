@@ -3,11 +3,15 @@
   "bin": {
     "p-gen": "dist/main.js"
   },
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "A command line to transform Hasura permissions into Casl-compatible ones.",
   "author": "Juan Lunar",
   "private": false,
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/juanjlunar/p-gen"
+  },
   "scripts": {
     "build": "NODE_ENV=production nest build",
     "build:prod": "yarn fresh:install && NODE_ENV=production nest build && rm -r node_modules && yarn fresh:install --production",
