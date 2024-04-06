@@ -2,6 +2,14 @@ table:
   name: roles
   schema: public
 is_enum: true
+array_relationships:
+  - name: user_roles
+    using:
+      foreign_key_constraint_on:
+        column: role
+        table:
+          name: user_roles
+          schema: public
 select_permissions:
   - role: user
     permission:
