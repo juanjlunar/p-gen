@@ -2,6 +2,7 @@ import { Global, Module } from '@nestjs/common';
 import { CosmiconfigService } from './cosmiconfig.service';
 import { CaslGeneratorCommand } from '../casl/casl-generator-command';
 import { CONFIG_OPTIONS_TOKEN } from './constants/injection-tokens.constant';
+import { ConfigService } from './config/config.service';
 
 @Global()
 @Module({
@@ -18,7 +19,8 @@ import { CONFIG_OPTIONS_TOKEN } from './constants/injection-tokens.constant';
         return config;
       },
     },
+    ConfigService,
   ],
-  exports: [CosmiconfigService, CONFIG_OPTIONS_TOKEN],
+  exports: [CosmiconfigService, CONFIG_OPTIONS_TOKEN, ConfigService],
 })
 export class CosmiconfigModule {}

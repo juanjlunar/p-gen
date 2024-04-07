@@ -14,7 +14,7 @@
   },
   "scripts": {
     "build": "NODE_ENV=production nest build",
-    "build:prod": "yarn fresh:install && NODE_ENV=production nest build && rm -r node_modules && yarn fresh:install --production",
+    "build:prod": "yarn fresh:install && NODE_ENV=production nest build && yarn fresh:install --production",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "NODE_ENV=development nest start",
     "start:dev": "NODE_ENV=development nest start --watch",
