@@ -13,19 +13,20 @@ import type {
   HasuraMetadataSource,
   HasuraMetadataTable,
 } from '../hasura/types';
-import type { Config } from '../common/types';
 import { LoggerService } from '../logger/logger.service';
-import { InjectConfigOptions } from '../cosmiconfig/decorators/inject-config-options.decorator';
 import { CaslPermissionTransformer } from './casl-permission-transformer/casl-permission-transformer';
+import { HasuraService } from '../hasura/hasura.service';
+import { ConfigService } from '../cosmiconfig/config/config.service';
 
 @Injectable()
 export class CaslService {
   constructor(
     private readonly hasuraRepository: IHasuraRepository,
+    private readonly hasuraService: HasuraService,
     private readonly utilsService: UtilsService,
     private readonly loggerService: LoggerService,
     private readonly caslPermissionTransformer: CaslPermissionTransformer,
-    @InjectConfigOptions() private readonly configOptions: Config,
+    private readonly configService: ConfigService,
   ) {}
 
   /**
@@ -38,6 +39,8 @@ export class CaslService {
     const { dataSource, hasuraAdminSecret, hasuraEndpointUrl } =
       generateCaslPermissionsDto;
 
+    const { include = {} } = this.configService.getConfig();
+
     const hasuraMetadata = await this.hasuraRepository.getHasuraMetadata({
       hasuraAdminSecret,
       hasuraEndpointUrl,
@@ -48,7 +51,12 @@ export class CaslService {
       dataSource,
     );
 
-    return this.getPermissionsMapping(currentDataSource.tables);
+    const filteredTablesMetadata = this.hasuraService.filterTablesMetadata(
+      include,
+      currentDataSource.tables,
+    );
+
+    return this.getPermissionsMapping(filteredTablesMetadata);
   }
 
   /**
@@ -102,7 +110,7 @@ export class CaslService {
         subject: subjectTransformer = undefined,
       } = {},
       replacements = {},
-    } = this.configOptions;
+    } = this.configService.getConfig();
 
     const hasuraRoleToCaslPermissions = {} as PermissionsMappingByRole;
 

@@ -6,6 +6,14 @@ import { Subjects, defineAbilityfor } from './utils/define-casl-ability-for';
 import { removePermissions } from './utils/remove-permissions.util';
 import { IHasuraRepository } from '../src/hasura/ihasura-repository.interface';
 import { dropPermissionsSilent } from './utils/drop-permissions-silent.util';
+import { configOptions } from './utils/config-options';
+import { ConfigService } from '../src/cosmiconfig/config/config.service';
+import {
+  type ConfigServiceMock,
+  createConfigServiceMock,
+} from '__mocks__/config-service.mock';
+import { waitFor } from './utils/wait-for.util';
+import { LoggerService } from '../src/logger/logger.service';
 
 const options = {
   hasuraAdminSecret: 'secret',
@@ -17,12 +25,33 @@ describe('CaslGeneratorCommand (e2e)', () => {
 
   let hasuraRepository: IHasuraRepository;
 
+  let configServiceMock: ConfigServiceMock;
+
+  let loggerService: LoggerService;
+
   beforeEach(async () => {
     commandModule = await CommandTestFactory.createTestingCommand({
       imports: [AppModule],
-    }).compile();
+    })
+      .overrideProvider(ConfigService)
+      .useValue(createConfigServiceMock())
+      .compile();
 
     hasuraRepository = commandModule.get(IHasuraRepository);
+
+    configServiceMock = commandModule.get(ConfigService);
+
+    configServiceMock.getConfig.mockReturnValue(configOptions);
+
+    loggerService = await commandModule.resolve(LoggerService);
+
+    await waitFor(async () => {
+      loggerService.debug('Waiting for the Hasura server to initialize...');
+
+      await hasuraRepository.getHasuraMetadata(options);
+
+      loggerService.debug('Hasura server found.');
+    });
   });
 
   afterEach(async () => {
@@ -4413,6 +4442,152 @@ describe('CaslGeneratorCommand (e2e)', () => {
 
           expect(test).toBe(true);
         });
+      });
+    });
+  });
+
+  describe('when the p-gen.config.ts file has the "include" property set', () => {
+    describe('when the include property has an empty array', () => {
+      it('should resolve the table permission metadata', async () => {
+        await hasuraRepository.createSelectPermission({
+          table: 'users',
+          role: 'user',
+          permission: {
+            columns: [],
+            filter: {
+              id: {
+                _eq: 'x-hasura-user-id',
+              },
+            },
+          },
+          headers: options,
+        });
+
+        await hasuraRepository.createInsertPermission({
+          table: 'users',
+          role: 'user',
+          permission: {
+            columns: [],
+            check: {
+              id: {
+                _eq: 'x-hasura-user-id',
+              },
+            },
+          },
+          headers: options,
+        });
+
+        configServiceMock.getConfig = vi.fn().mockReturnValue({
+          ...configOptions,
+          include: {
+            users: [],
+          },
+        });
+
+        await CommandTestFactory.run(commandModule, [
+          '-s',
+          options.hasuraAdminSecret,
+          '-he',
+          options.hasuraEndpointUrl,
+          '-f',
+          'true',
+        ]);
+
+        const permissionsJSON = await loadPermissions();
+
+        const appAbility = defineAbilityfor(
+          {
+            id: '1',
+            user_roles: [{ role: 'ADMIN', user_id: '1' }],
+          },
+          permissionsJSON,
+        );
+
+        const selectTest = appAbility.can('READ', {
+          __customSubject: Subjects.User,
+          id: '1',
+        });
+
+        const insertTest = appAbility.can('INSERT', {
+          __customSubject: Subjects.User,
+          id: '1',
+        });
+
+        expect(selectTest).toBe(true);
+
+        expect(insertTest).toBe(true);
+      });
+    });
+
+    describe('otherwise', () => {
+      it('should generate the permissions only with the included tables', async () => {
+        await hasuraRepository.createSelectPermission({
+          table: 'users',
+          role: 'user',
+          permission: {
+            columns: [],
+            filter: {
+              id: {
+                _eq: 'x-hasura-user-id',
+              },
+            },
+          },
+          headers: options,
+        });
+
+        await hasuraRepository.createInsertPermission({
+          table: 'users',
+          role: 'user',
+          permission: {
+            columns: [],
+            check: {
+              id: {
+                _eq: 'x-hasura-user-id',
+              },
+            },
+          },
+          headers: options,
+        });
+
+        configServiceMock.getConfig = vi.fn().mockReturnValue({
+          ...configOptions,
+          include: {
+            users: ['select_permissions'],
+          },
+        });
+
+        await CommandTestFactory.run(commandModule, [
+          '-s',
+          options.hasuraAdminSecret,
+          '-he',
+          options.hasuraEndpointUrl,
+          '-f',
+          'true',
+        ]);
+
+        const permissionsJSON = await loadPermissions();
+
+        const appAbility = defineAbilityfor(
+          {
+            id: '1',
+            user_roles: [{ role: 'ADMIN', user_id: '1' }],
+          },
+          permissionsJSON,
+        );
+
+        const selectTest = appAbility.can('READ', {
+          __customSubject: Subjects.User,
+          id: '1',
+        });
+
+        const insertTest = appAbility.can('INSERT', {
+          __customSubject: Subjects.User,
+          id: '1',
+        });
+
+        expect(selectTest).toBe(true);
+
+        expect(insertTest).toBe(false);
       });
     });
   });

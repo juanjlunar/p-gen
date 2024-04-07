@@ -4,3 +4,5 @@ export const hasuraPermissionTypes = [
   'update_permissions',
   'delete_permissions',
 ] as const;
+
+export type HasuraPermissionType = (typeof hasuraPermissionTypes)[number];

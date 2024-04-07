@@ -56,19 +56,9 @@ export class HasuraRepository implements IHasuraRepository {
     } catch (err) {
       const error = err as AxiosError<{ error?: string }>;
 
-      if (error.code === 'ECONNREFUSED') {
-        throw new HasuraConnectionError(hasuraEndpointUrl);
-      }
+      const errorToThrow = this.resolveErrorThrown(error, hasuraEndpointUrl);
 
-      if (error.response?.status === 401) {
-        throw new UnauthorizedError();
-      }
-
-      if (error.response?.status === 404) {
-        throw new NotFoundError();
-      }
-
-      throw new Error(error.response?.data?.error ?? 'Unknown error.');
+      throw errorToThrow;
     }
   }
 
@@ -113,19 +103,9 @@ export class HasuraRepository implements IHasuraRepository {
     } catch (err) {
       const error = err as AxiosError<{ error?: string }>;
 
-      if (error.code === 'ECONNREFUSED') {
-        throw new HasuraConnectionError(hasuraEndpointUrl);
-      }
+      const errorToThrow = this.resolveErrorThrown(error, hasuraEndpointUrl);
 
-      if (error.response?.status === 401) {
-        throw new UnauthorizedError();
-      }
-
-      if (error.response?.status === 404) {
-        throw new NotFoundError();
-      }
-
-      throw new Error(error.response?.data?.error ?? 'Unknown error.');
+      throw errorToThrow;
     }
   }
 
@@ -170,19 +150,9 @@ export class HasuraRepository implements IHasuraRepository {
     } catch (err) {
       const error = err as AxiosError<{ error?: string }>;
 
-      if (error.code === 'ECONNREFUSED') {
-        throw new HasuraConnectionError(hasuraEndpointUrl);
-      }
+      const errorToThrow = this.resolveErrorThrown(error, hasuraEndpointUrl);
 
-      if (error.response?.status === 401) {
-        throw new UnauthorizedError();
-      }
-
-      if (error.response?.status === 404) {
-        throw new NotFoundError();
-      }
-
-      throw new Error(error.response?.data?.error ?? 'Unknown error.');
+      throw errorToThrow;
     }
   }
 
@@ -227,19 +197,9 @@ export class HasuraRepository implements IHasuraRepository {
     } catch (err) {
       const error = err as AxiosError<{ error?: string }>;
 
-      if (error.code === 'ECONNREFUSED') {
-        throw new HasuraConnectionError(hasuraEndpointUrl);
-      }
+      const errorToThrow = this.resolveErrorThrown(error, hasuraEndpointUrl);
 
-      if (error.response?.status === 401) {
-        throw new UnauthorizedError();
-      }
-
-      if (error.response?.status === 404) {
-        throw new NotFoundError();
-      }
-
-      throw new Error(error.response?.data?.error ?? 'Unknown error.');
+      throw errorToThrow;
     }
   }
 
@@ -284,19 +244,9 @@ export class HasuraRepository implements IHasuraRepository {
     } catch (err) {
       const error = err as AxiosError<{ error?: string }>;
 
-      if (error.code === 'ECONNREFUSED') {
-        throw new HasuraConnectionError(hasuraEndpointUrl);
-      }
+      const errorToThrow = this.resolveErrorThrown(error, hasuraEndpointUrl);
 
-      if (error.response?.status === 401) {
-        throw new UnauthorizedError();
-      }
-
-      if (error.response?.status === 404) {
-        throw new NotFoundError();
-      }
-
-      throw new Error(error.response?.data?.error ?? 'Unknown error.');
+      throw errorToThrow;
     }
   }
 
@@ -329,17 +279,7 @@ export class HasuraRepository implements IHasuraRepository {
         },
       );
 
-      // Retry 3 times in case the Hasura container is swill booting up.
-      const result = await firstValueFrom(
-        request,
-        // request.pipe(
-        //   map((value) => value),
-        //   retry({
-        //     count: 5,
-        //     delay: 500,
-        //   }),
-        // ),
-      );
+      const result = await firstValueFrom(request);
 
       return result.data;
     } catch (err) {
@@ -357,5 +297,28 @@ export class HasuraRepository implements IHasuraRepository {
 
       throw new Error(error.response?.data?.error ?? 'Unknown error.');
     }
+  }
+
+  /**
+   * Resolve Hasura fetch error.
+   *
+   */
+  private resolveErrorThrown(
+    err: AxiosError<{ error?: string }>,
+    hasuraEndpointUrl: string,
+  ) {
+    if (err.code === 'ECONNREFUSED' || err.code === 'ECONNRESET') {
+      return new HasuraConnectionError(hasuraEndpointUrl);
+    }
+
+    if (err.response?.status === 401) {
+      return new UnauthorizedError();
+    }
+
+    if (err.response?.status === 404) {
+      return new NotFoundError();
+    }
+
+    return new Error(err.response?.data?.error ?? 'Unknown error.');
   }
 }

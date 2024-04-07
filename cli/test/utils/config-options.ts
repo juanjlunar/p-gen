@@ -1,6 +1,7 @@
-import type { Config } from 'p-gen';
+import type { Config } from '../../src/common/types';
+import pluralize from 'pluralize';
 
-const config: Config = {
+export const configOptions: Config = {
   transformers: {
     action: (act: string) => {
       // Do your transformation.
@@ -20,7 +21,7 @@ const config: Config = {
     },
     subject: (sub: string) => {
       // Do your transformation.
-      return sub;
+      return pluralize.singular(sub).toUpperCase();
     },
   },
   replacements: {
@@ -29,7 +30,5 @@ const config: Config = {
   },
   include: {
     // users: ['insert_permissions'],
-  }
+  },
 };
-
-export default config;

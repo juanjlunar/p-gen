@@ -31,6 +31,7 @@ export class CaslGeneratorCommand extends CommandRunner {
       dataSource = DEFAULT_DATA_SOURCE,
       flat = false,
     } = options;
+
     const permissions = await this.caslService.generateCaslPermissions({
       hasuraAdminSecret,
       hasuraEndpointUrl,
