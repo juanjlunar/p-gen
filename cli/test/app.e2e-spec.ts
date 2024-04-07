@@ -14,6 +14,8 @@ import {
 } from '__mocks__/config-service.mock';
 import { waitFor } from './utils/wait-for.util';
 import { LoggerService } from '../src/logger/logger.service';
+import { UtilsService } from '../src/utils/utils.service';
+import { join } from 'path';
 
 const options = {
   hasuraAdminSecret: 'secret',
@@ -28,6 +30,8 @@ describe('CaslGeneratorCommand (e2e)', () => {
   let configServiceMock: ConfigServiceMock;
 
   let loggerService: LoggerService;
+
+  let utilsService: UtilsService;
 
   beforeEach(async () => {
     commandModule = await CommandTestFactory.createTestingCommand({
@@ -44,6 +48,8 @@ describe('CaslGeneratorCommand (e2e)', () => {
     configServiceMock.getConfig.mockReturnValue(configOptions);
 
     loggerService = await commandModule.resolve(LoggerService);
+
+    utilsService = commandModule.get(UtilsService);
 
     await waitFor(async () => {
       loggerService.debug('Waiting for the Hasura server to initialize...');
@@ -4589,6 +4595,52 @@ describe('CaslGeneratorCommand (e2e)', () => {
 
         expect(insertTest).toBe(false);
       });
+    });
+  });
+
+  describe('when the --json-path option is provided', () => {
+    it('should generate the permissions in the provided path', async () => {
+      const mockFn = vi.fn();
+
+      utilsService.writeFile = mockFn;
+
+      await CommandTestFactory.run(commandModule, [
+        '-s',
+        options.hasuraAdminSecret,
+        '-he',
+        options.hasuraEndpointUrl,
+        '-f',
+        'true',
+        '-jp',
+        'custom-dir',
+      ]);
+
+      expect(mockFn).toHaveBeenCalledWith(
+        join('custom-dir', 'permissions.json'),
+        expect.anything(),
+      );
+    });
+  });
+
+  describe('otherwise', () => {
+    it('should generate the permissions in the current working directory', async () => {
+      const mockFn = vi.fn();
+
+      utilsService.writeFile = mockFn;
+
+      await CommandTestFactory.run(commandModule, [
+        '-s',
+        options.hasuraAdminSecret,
+        '-he',
+        options.hasuraEndpointUrl,
+        '-f',
+        'true',
+      ]);
+
+      expect(mockFn).toHaveBeenCalledWith(
+        join(process.cwd(), 'permissions.json'),
+        expect.anything(),
+      );
     });
   });
 });

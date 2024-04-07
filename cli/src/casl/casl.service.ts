@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { IHasuraRepository } from '../hasura/ihasura-repository.interface';
 import type {
   CaslPermission,
+  ExportToJSONOptions,
   GenerateCaslPermissionsDto,
   PermissionsMappingByRole,
 } from './types';
@@ -65,8 +66,11 @@ export class CaslService {
    */
   async exportToJSON(
     permissionsMapping: PermissionsMappingByRole | CaslPermission[],
+    options = {} as ExportToJSONOptions,
   ) {
-    const permissionsFilePath = join(process.cwd(), 'permissions.json');
+    const { path = process.cwd() } = options;
+
+    const permissionsFilePath = join(path, 'permissions.json');
 
     const permissionsData = JSON.stringify(permissionsMapping, null, ' ');
 

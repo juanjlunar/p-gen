@@ -9,5 +9,6 @@ export function createUtilsServiceMock(): UtilsServiceMock {
     createConfigFile: vi.fn(),
     writeFile: vi.fn(),
     flatPermissionsMapping: vi.fn(),
+    fileOrDirExists: vi.fn(),
   };
 }

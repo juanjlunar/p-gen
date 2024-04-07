@@ -29,6 +29,7 @@ export class CaslGeneratorCommand extends CommandRunner {
       hasuraAdminSecret,
       hasuraEndpointUrl = DEFAULT_HASURA_ENDPOINT_URL,
       dataSource = DEFAULT_DATA_SOURCE,
+      jsonPath,
       flat = false,
     } = options;
 
@@ -42,7 +43,9 @@ export class CaslGeneratorCommand extends CommandRunner {
       ? permissions
       : this.utilsService.flatPermissionsMapping(permissions);
 
-    await this.caslService.exportToJSON(resolvedPermissions);
+    await this.caslService.exportToJSON(resolvedPermissions, {
+      path: jsonPath,
+    });
   }
 
   @Option({
@@ -78,5 +81,13 @@ export class CaslGeneratorCommand extends CommandRunner {
   })
   parseFlat(value: string) {
     return value.toLowerCase() === 'true';
+  }
+
+  @Option({
+    flags: '-jp, --json-path [json-path]',
+    description: `Generates the permissions in the specified path. (default: current working directory)`,
+  })
+  parseJsonPath(value: string) {
+    return value;
   }
 }
