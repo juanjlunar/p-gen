@@ -37,6 +37,8 @@ yarn add @lunarj/p-gen -D
 
 `-f, --flat` generates permissions without the Hasura roles mapping. It will be a plain array with the permissions without the role separation.
 
+`-jp, --json-path` indicates the custom location to export the permissions JSON file.
+
 `-h, --help` prints the help on the terminal
 
 ## Understanding the config
