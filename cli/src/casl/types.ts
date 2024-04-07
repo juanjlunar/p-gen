@@ -3,6 +3,7 @@ export type CaslGeneratorOptions = {
   dataSource?: string;
   hasuraEndpointUrl?: string;
   flat?: boolean;
+  jsonPath?: string;
 };
 
 export type GenerateCaslPermissionsDto = {
@@ -29,3 +30,7 @@ export interface DBSyncPermission
   fields: string | null;
   conditions: string;
 }
+
+export type ExportToJSONOptions = {
+  path?: string;
+};

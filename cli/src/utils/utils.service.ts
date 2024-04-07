@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { readFile, writeFile } from 'fs/promises';
-import { join } from 'path';
+import { readFile, writeFile, mkdir, rm, access } from 'fs/promises';
+import { join, dirname } from 'path';
 import { CONFIG_FILE_NAME } from '../common/constants';
 import type { Stream } from 'stream';
 import { CaslPermission, PermissionsMappingByRole } from '../casl/types';
+import type { PathLike } from 'fs';
 
 @Injectable()
 export class UtilsService {
@@ -36,11 +37,11 @@ export class UtilsService {
       },
     );
 
-    const fielPath = join(cwd, CONFIG_FILE_NAME);
+    const filePath = join(cwd, CONFIG_FILE_NAME);
 
-    await this.writeFile(fielPath, stubFilePath);
+    await this.writeFile(filePath, stubFilePath);
 
-    return fielPath;
+    return filePath;
   }
 
   async writeFile(
@@ -52,7 +53,34 @@ export class UtilsService {
       | AsyncIterable<string | NodeJS.ArrayBufferView>
       | Stream,
   ): Promise<void> {
-    await writeFile(filePath, data);
+    const dirPath = dirname(filePath);
+
+    const fileOrDirExists = await this.fileOrDirExists(dirPath);
+
+    try {
+      await mkdir(dirPath, { recursive: true });
+
+      await writeFile(filePath, data);
+    } catch (error) {
+      const pathToRemove = !fileOrDirExists ? dirPath : filePath;
+
+      await rm(pathToRemove, {
+        recursive: true,
+        force: true,
+      });
+
+      throw error;
+    }
+  }
+
+  async fileOrDirExists(path: PathLike): Promise<boolean> {
+    try {
+      await access(path);
+
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 
   flatPermissionsMapping(
