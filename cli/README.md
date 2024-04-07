@@ -79,6 +79,9 @@ const config: Config = {
     // Example
     'x-hasura-user-id': '${user.id}',
   },
+  include: {
+    // tableName: ['select_permissions']
+  }
 };
 
 export default config;
@@ -88,6 +91,19 @@ export default config;
 The `action` property is used to customize the Casl action property. This function is called for every permission receiving the Hasura permission type as a parameter (insert_permissions, update_permissions, select_permissions, or delete_permissions)
 
 The `subject` property is used to customize the Casl subject property. This function is called for every permission receiving the Hasura data source table as a parameter.
+
+The `include` property filters the permissions you need to transform.
+
+`p-gen.config.ts`
+```
+  {
+    include: {
+      users: ['insert_permissions']
+    }
+  }
+```
+
+In this example, the CLI will generate only the insert permissions from the user's table.
 
 The `replacements` property is used to replace Hasura permission operators or session variables with custom values, for example: a permission using the X-Hasura-User-Id session variable will be replaced with '${user.id}' in the config shown above.
 
