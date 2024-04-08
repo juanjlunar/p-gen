@@ -3,11 +3,12 @@
   "bin": {
     "p-gen": "dist/src/main.js"
   },
-  "version": "1.2.8",
+  "version": "1.2.9",
   "description": "A command line to transform Hasura permissions into Casl-compatible ones.",
   "author": "Juan Lunar",
   "private": false,
   "license": "MIT",
+  "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/juanjlunar/p-gen"
@@ -38,8 +39,8 @@
   },
   "files": [
     "dist/src/*",
-    "dist/cosmiconfig/*",
-    "index.ts"
+    "dist/index.d.ts",
+    "dist/cosmiconfig/*"
   ],
   "dependencies": {
     "@nestjs/axios": "^3.0.2",
