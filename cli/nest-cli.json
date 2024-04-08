@@ -4,6 +4,12 @@
   "sourceRoot": "src",
   "compilerOptions": {
     "deleteOutDir": true,
-    "assets": ["**/*.stub", "**.d.ts"]
+    "assets": [
+      {
+        "include": "**/*.stub",
+        "outDir": "dist/src"
+      },
+      "**.d.ts"
+    ]
   }
 }
