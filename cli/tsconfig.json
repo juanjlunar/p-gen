@@ -30,5 +30,5 @@
   "ts-node": {
     "swc": true
   },
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["dist"]
 }
