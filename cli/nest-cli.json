@@ -4,10 +4,6 @@
   "sourceRoot": "src",
   "compilerOptions": {
     "deleteOutDir": true,
-    "builder": {
-      "type": "swc",
-      "type-check": true
-    },
-    "assets": ["**/*.stub"]
+    "assets": ["**/*.stub", "**.d.ts"]
   }
 }
