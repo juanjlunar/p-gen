@@ -3,7 +3,7 @@
   "bin": {
     "p-gen": "dist/src/main.js"
   },
-  "version": "1.2.6",
+  "version": "1.2.7",
   "description": "A command line to transform Hasura permissions into Casl-compatible ones.",
   "author": "Juan Lunar",
   "private": false,
@@ -37,7 +37,9 @@
     "fresh:install": "rm -r node_modules | echo && yarn install --frozen-lockfile"
   },
   "files": [
-    "/dist"
+    "dist/src/*",
+    "dist/cosmiconfig/*",
+    "index.ts"
   ],
   "dependencies": {
     "@nestjs/axios": "^3.0.2",
