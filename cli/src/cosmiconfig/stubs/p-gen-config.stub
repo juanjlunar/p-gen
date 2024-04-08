@@ -29,7 +29,7 @@ const config: Config = {
   },
   include: {
     // users: ['insert_permissions'],
-  }
+  },
 };
 
 export default config;
