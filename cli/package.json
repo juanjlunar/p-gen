@@ -3,7 +3,7 @@
   "bin": {
     "p-gen": "dist/main.js"
   },
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "A command line to transform Hasura permissions into Casl-compatible ones.",
   "author": "Juan Lunar",
   "private": false,
