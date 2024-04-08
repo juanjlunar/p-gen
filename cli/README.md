@@ -52,7 +52,7 @@ There are 2 ways to generate the config file:
 `p-gen.config.ts`
 
 ```
-import type { Config } from 'p-gen';
+import type { Config } from '@lunarj/p-gen/dist';
 
 const config: Config = {
   transformers: {
