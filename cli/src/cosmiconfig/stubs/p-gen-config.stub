@@ -1,4 +1,4 @@
-import type { Config } from '@lunarj/p-gen/dist';
+import type { Config } from '@lunarj/p-gen';
 
 const config: Config = {
   transformers: {

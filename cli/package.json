@@ -37,7 +37,9 @@
     "fresh:install": "rm -r node_modules | echo && yarn install --frozen-lockfile"
   },
   "files": [
-    "/dist"
+    "dist/src/*",
+    "dist/cosmiconfig/*",
+    "index.ts"
   ],
   "dependencies": {
     "@nestjs/axios": "^3.0.2",
