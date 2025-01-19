@@ -1,11 +1,11 @@
-import { CommandRunner, RootCommand, Option } from 'nest-commander';
-import type { CaslGeneratorOptions } from './types';
-import { CaslService } from './casl.service';
+import { CommandRunner, Option, RootCommand } from 'nest-commander';
 import {
   DEFAULT_DATA_SOURCE,
   DEFAULT_HASURA_ENDPOINT_URL,
 } from '../hasura/constants';
 import { UtilsService } from '../utils/utils.service';
+import { CaslService } from './casl.service';
+import type { CaslGeneratorOptions } from './types';
 
 @RootCommand({
   description: 'Generate Casl permissions from Hasura permissions',

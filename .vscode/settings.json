@@ -6,5 +6,8 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": true
   },
-  "eslint.workingDirectories": ["./cli"]
+  "eslint.workingDirectories": ["./cli"],
+  "githubIssues.issueBranchTitle": "#${issueNumber}-${sanitizedIssueTitle}",
+  "githubIssues.issueCompletionFormatScm": "#${issueNumber}-${sanitizedIssueTitle}",
+  "githubIssues.workingIssueFormatScm": "${issueTitle} \nFixes #${issueNumber}"
 }

@@ -1,23 +1,23 @@
 import { Injectable } from '@nestjs/common';
+import { join } from 'path';
+import { ConfigService } from '../cosmiconfig/config/config.service';
+import { defaultMatcherReplacements } from '../hasura/constants/default-matcher-replacements.constant';
+import { hasuraPermissionTypes } from '../hasura/constants/permissions.constant';
+import { HasuraService } from '../hasura/hasura.service';
 import { IHasuraRepository } from '../hasura/ihasura-repository.interface';
+import type {
+  HasuraMetadataSource,
+  HasuraMetadataTable,
+} from '../hasura/types';
+import { LoggerService } from '../logger/logger.service';
+import { UtilsService } from '../utils/utils.service';
+import { CaslPermissionTransformer } from './casl-permission-transformer/casl-permission-transformer';
 import type {
   CaslPermission,
   ExportToJSONOptions,
   GenerateCaslPermissionsDto,
   PermissionsMappingByRole,
 } from './types';
-import { hasuraPermissionTypes } from '../hasura/constants/permissions.constant';
-import { UtilsService } from '../utils/utils.service';
-import { defaultMatcherReplacements } from '../hasura/constants/default-matcher-replacements.constant';
-import { join } from 'path';
-import type {
-  HasuraMetadataSource,
-  HasuraMetadataTable,
-} from '../hasura/types';
-import { LoggerService } from '../logger/logger.service';
-import { CaslPermissionTransformer } from './casl-permission-transformer/casl-permission-transformer';
-import { HasuraService } from '../hasura/hasura.service';
-import { ConfigService } from '../cosmiconfig/config/config.service';
 
 @Injectable()
 export class CaslService {
@@ -93,6 +93,8 @@ export class CaslService {
     const currentDataSource = dataSources.find(
       (value) => value.name === dataSource,
     );
+
+    // TODO: Fix this error not showing on the terminal.
 
     if (!currentDataSource) {
       throw new Error(`DataSource ${currentDataSource} not found.`);
