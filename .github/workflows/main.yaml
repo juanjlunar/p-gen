@@ -12,6 +12,6 @@ jobs:
           node-version: '18.18'
           registry-url: 'https://registry.npmjs.org'
       - run: cd cli && yarn install --frozen-lockfile && yarn build
-      - run: cd cli && yarn publish --access=public
+      - run: cd cli && npm config set //registry.npmjs.org/:_authToken ${NODE_AUTH_TOKEN} && yarn publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
