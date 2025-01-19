@@ -1,30 +1,75 @@
-version: "3.6"
+# include:
+#   - ./hasura/docker-compose.yaml
+
+# version: "3.6"
+# services:
+#   postgres:
+#     image: postgres:17-alpine3.20
+#     restart: always
+#     ports:
+#       - "5500:5432"
+#     volumes:
+#       - db_data:/var/lib/postgresql/data
+#     env_file:
+#      - .env
+#     healthcheck:
+#       test: ['CMD', 'pg_isready', '-d', 'komodo', '-U', 'postgres']
+#       interval: 4s
+#     networks:
+#       - p-gen-network
+
+#   hasura:
+#     build:
+#       context: ./hasura
+#     restart: always
+#     depends_on:
+#       - postgres
+#     ports:
+#       - "8100:8080"
+#     env_file:
+#       - ./hasura/.env
+#     networks:
+#       - p-gen-network
+      
+# volumes:
+#   db_data:
+
+# networks:
+#   p-gen-network:
+#     name: p-gen-network
+
 services:
   postgres:
-    image: postgres:15.4-alpine3.18
+    image: postgres:17-alpine3.20
     restart: always
     ports:
       - "5500:5432"
-    env_file:
-      - ./postgres/.env
     volumes:
       - db_data:/var/lib/postgresql/data
+    env_file:
+    - ./postgres/.env
+    healthcheck:
+      test: ['CMD', 'pg_isready', '-d', 'komodo', '-U', 'postgres']
+      interval: 4s
     networks:
       - p-gen-network
-
+  # Hasura engine.
   hasura:
     build:
       context: ./hasura
     restart: always
-    depends_on:
-      - postgres
     ports:
       - "8100:8080"
     env_file:
       - ./hasura/.env
+    healthcheck:
+      test: timeout 1s bash -c ':> /dev/tcp/127.0.0.1/8080' || exit 1
+      interval: 4s
+    depends_on:
+      postgres:
+        condition: service_healthy
     networks:
       - p-gen-network
-      
 volumes:
   db_data:
 

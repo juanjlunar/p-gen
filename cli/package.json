@@ -1,12 +1,9 @@
 {
   "name": "@lunarj/p-gen",
-  "bin": {
-    "p-gen": "dist/src/main.js"
-  },
-  "version": "1.2.9",
+  "bin": "dist/src/main.js",
+  "version": "1.2.10",
   "description": "A command line to transform Hasura permissions into Casl-compatible ones.",
   "author": "Juan Lunar",
-  "private": false,
   "license": "MIT",
   "types": "dist/index.d.ts",
   "repository": {
@@ -15,6 +12,8 @@
   },
   "scripts": {
     "build": "NODE_ENV=production nest build",
+    "local:pack": "yarn pack --out dist/p-gen.tgz && mv ./dist/p-gen.tgz $(echo \"$HOME/\")/local-dist-packages",
+    "local:pack2": "echo $(echo \"$HOME/\")",
     "build:prod": "yarn fresh:install && NODE_ENV=production nest build && yarn fresh:install --production",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "NODE_ENV=development nest start",
@@ -28,7 +27,7 @@
     "test:cov:watch": "vitest --coverage",
     "test:debug": "vitest --inspect-brk --inspect --logHeapUsage --threads=false",
     "pretest:e2e": "docker compose up -d",
-    "test:e2e": "vitest run --config ./vitest.config.e2e.mts",
+    "test:e2e": "yarn pretest:e2e && vitest run --config ./vitest.config.e2e.mts && yarn posttest:e2e",
     "posttest:e2e": "yarn test:e2e:down",
     "pretest:e2e:watch": "docker compose up -d",
     "test:e2e:watch": "vitest --config ./vitest.config.e2e.mts",
@@ -38,7 +37,7 @@
     "fresh:install": "rm -r node_modules | echo && yarn install --frozen-lockfile"
   },
   "files": [
-    "dist/src/*",
+    "dist/src/**",
     "dist/index.d.ts",
     "dist/cosmiconfig/*"
   ],
@@ -107,5 +106,6 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
-  }
+  },
+  "packageManager": "yarn@4.6.0"
 }
