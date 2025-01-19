@@ -4,6 +4,7 @@ export type Config = {
   transformers?: {
     action: (value: string) => string;
     subject: (value: string) => string;
+    field?: (value: string) => string;
   };
   replacements?: Record<string, string>;
   include?: Record<string, HasuraPermissionType[]>;

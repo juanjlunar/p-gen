@@ -112,8 +112,9 @@ export class CaslService {
   ): PermissionsMappingByRole {
     const {
       transformers: {
-        action: actionTransformer = undefined,
-        subject: subjectTransformer = undefined,
+        action: actionTransformer,
+        subject: subjectTransformer,
+        field: fieldsTransformer,
       } = {},
       replacements = {},
     } = this.configService.getConfig();
@@ -141,6 +142,11 @@ export class CaslService {
             ? ['']
             : rolePermission.permission.columns;
 
+          const transformedFields =
+            typeof fieldsTransformer === 'function'
+              ? fields.map(fieldsTransformer)
+              : fields;
+
           const conditions =
             rolePermission?.permission?.check ??
             rolePermission?.permission?.filter ??
@@ -160,7 +166,7 @@ export class CaslService {
           const caslPermission: CaslPermission = {
             action,
             subject,
-            fields,
+            fields: transformedFields,
             conditions: flattenedConditions,
           };
 
