@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { readFile, writeFile, mkdir, rm, access } from 'fs/promises';
-import { join, dirname } from 'path';
-import { CONFIG_FILE_NAME } from '../common/constants';
+import type { PathLike } from 'fs';
+import { access, mkdir, readFile, rm, writeFile } from 'fs/promises';
+import { dirname, join } from 'path';
 import type { Stream } from 'stream';
 import { CaslPermission, PermissionsMappingByRole } from '../casl/types';
-import type { PathLike } from 'fs';
+import { CONFIG_FILE_NAME } from '../common/constants';
 
 @Injectable()
 export class UtilsService {
@@ -17,7 +17,7 @@ export class UtilsService {
     const replacementKeys = Object.keys(replacements);
 
     replacementKeys.forEach((replacementKey) => {
-      const regex = new RegExp(replacementKey, 'ig');
+      const regex = new RegExp(`\\b${replacementKey}\\b`, 'ig');
 
       stringified = stringified.replaceAll(regex, () => {
         return replacements[replacementKey];
